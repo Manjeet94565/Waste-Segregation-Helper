@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoSort - Waste Segregation Helper</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-recycle"></i>
+                <h1>EcoSort Assistant</h1>
+            </div>
+            <button id="darkModeToggle"><i class="fas fa-moon"></i></button>
+            <p class="subtitle">Identify the correct bin for your waste - Wet, Dry, Recyclable or Hazardous</p>
+        </header>
+
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Enter an item (e.g. banana peel, plastic bottle, battery)">
+            <button id="searchBtn"><i class="fas fa-search"></i> Sort</button>
+            <button id="clearBtn"><i class="fas fa-times"></i> Clear</button>
+        </div>
+
+        <div class="categories">
+            <div class="category wet" data-category="wet">
+                <i class="fas fa-apple-alt"></i>
+                <h3>Wet Waste</h3>
+            </div>
+            <div class="category dry" data-category="dry">
+                <i class="fas fa-leaf"></i>
+                <h3>Dry Waste</h3>
+            </div>
+            <div class="category recyclable" data-category="recyclable">
+                <i class="fas fa-bottle"></i>
+                <h3>Recyclable</h3>
+            </div>
+            <div class="category hazardous" data-category="hazardous">
+                <i class="fas fa-skull"></i>
+                <h3>Hazardous</h3>
+            </div>
+        </div>
+
+        <div class="result-container" id="resultContainer">
+            <div class="result-header">
+                <div class="result-icon" id="resultIcon">
+                    <i class="fas fa-apple-alt"></i>
+                </div>
+                <div class="result-content">
+                    <h2 id="resultTitle">Wet Waste</h2>
+                    <p id="resultDescription">Biodegradable organic waste that decomposes quickly</p>
+                </div>
+            </div>
+            <div class="examples">
+                <h3><i class="fas fa-list"></i> Common Examples:</h3>
+                <ul id="examplesList">
+                    <li>Banana Peel</li>
+                    <li>Vegetable Scraps</li>
+                    <li>Tea Bags</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="tips">
+            <h2><i class="fas fa-lightbulb"></i> Segregation Tips</h2>
+            <ul>
+                <li><strong>Wet Waste:</strong> Compostable organic matter like food scraps, garden waste</li>
+                <li><strong>Dry Waste:</strong> Non-biodegradable items like paper, cloth, wood (non-recyclable)</li>
+                <li><strong>Recyclable:</strong> Plastics, glass, metals, clean paper that can be processed</li>
+                <li><strong>Hazardous:</strong> Batteries, chemicals, e-waste, medical waste - handle with care!</li>
+                <li>Always rinse containers before recycling to avoid contamination</li>
+                <li>When in doubt, check with your local waste management guidelines</li>
+            </ul>
+        </div>
+
+        <footer>
+            <p>EcoSort Assistant &copy; 2025 | Making waste segregation simple</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
