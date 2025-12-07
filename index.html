@@ -21,6 +21,7 @@
         <div class="search-container">
             <input type="text" id="searchInput" placeholder="Enter an item (e.g. banana peel, plastic bottle, battery)">
             <button id="searchBtn"><i class="fas fa-search"></i> Sort</button>
+            <button id="voiceBtn"><i class="fas fa-microphone"></i></button>
             <button id="clearBtn"><i class="fas fa-times"></i> Clear</button>
         </div>
 
@@ -73,6 +74,50 @@
                 <li>Always rinse containers before recycling to avoid contamination</li>
                 <li>When in doubt, check with your local waste management guidelines</li>
             </ul>
+        </div>
+
+        <div class="new-features">
+            <div class="feature-tabs">
+                <button class="tab-btn active" data-tab="quiz"><i class="fas fa-question-circle"></i> Quiz</button>
+                <button class="tab-btn" data-tab="stats"><i class="fas fa-chart-bar"></i> Stats</button>
+                <button class="tab-btn" data-tab="history"><i class="fas fa-history"></i> History</button>
+            </div>
+
+            <div class="tab-content" id="quizTab">
+                <h3>Test Your Knowledge!</h3>
+                <div id="quizQuestion"></div>
+                <div id="quizOptions"></div>
+                <button id="nextQuestionBtn" style="display:none;">Next Question</button>
+                <div id="quizResult"></div>
+            </div>
+
+            <div class="tab-content" id="statsTab" style="display:none;">
+                <h3>Your Waste Sorting Statistics</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <h4>Wet Waste</h4>
+                        <span id="wetCount">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <h4>Dry Waste</h4>
+                        <span id="dryCount">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <h4>Recyclable</h4>
+                        <span id="recyclableCount">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <h4>Hazardous</h4>
+                        <span id="hazardousCount">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="historyTab" style="display:none;">
+                <h3>Recent Searches</h3>
+                <ul id="historyList"></ul>
+                <button id="clearHistoryBtn">Clear History</button>
+            </div>
         </div>
 
         <footer>

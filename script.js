@@ -43,6 +43,7 @@ const wasteDatabase = {
 // DOM elements
 const searchInput = document.getElementById('searchInput');
 const searchBtn = document.getElementById('searchBtn');
+const voiceBtn = document.getElementById('voiceBtn');
 const clearBtn = document.getElementById('clearBtn');
 const darkModeToggle = document.getElementById('darkModeToggle');
 const resultContainer = document.getElementById('resultContainer');
@@ -51,6 +52,22 @@ const resultDescription = document.getElementById('resultDescription');
 const resultIcon = document.getElementById('resultIcon');
 const examplesList = document.getElementById('examplesList');
 const categories = document.querySelectorAll('.category');
+
+// New feature elements
+const tabBtns = document.querySelectorAll('.tab-btn');
+const quizTab = document.getElementById('quizTab');
+const statsTab = document.getElementById('statsTab');
+const historyTab = document.getElementById('historyTab');
+const quizQuestion = document.getElementById('quizQuestion');
+const quizOptions = document.getElementById('quizOptions');
+const nextQuestionBtn = document.getElementById('nextQuestionBtn');
+const quizResult = document.getElementById('quizResult');
+const wetCount = document.getElementById('wetCount');
+const dryCount = document.getElementById('dryCount');
+const recyclableCount = document.getElementById('recyclableCount');
+const hazardousCount = document.getElementById('hazardousCount');
+const historyList = document.getElementById('historyList');
+const clearHistoryBtn = document.getElementById('clearHistoryBtn');
 
 // Dark mode functionality
 let isDarkMode = false;
@@ -72,6 +89,16 @@ window.addEventListener('load', () => {
     }
     searchInput.value = "banana peel";
     performSearch();
+
+    // Initialize tabs
+    tabBtns[0].classList.add('active'); // Set first tab as active
+    quizTab.style.display = 'block';
+    statsTab.style.display = 'none';
+    historyTab.style.display = 'none';
+
+    // Load initial data
+    loadStats();
+    loadHistory();
 });
 
 // Handle search button click
@@ -101,6 +128,74 @@ categories.forEach(category => {
     });
 });
 
+// Handle voice button click
+voiceBtn.addEventListener('click', () => {
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'en-US';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        recognition.onstart = () => {
+            voiceBtn.innerHTML = '<i class="fas fa-microphone-slash"></i>';
+            voiceBtn.style.color = '#f44336';
+        };
+
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            searchInput.value = transcript;
+            performSearch();
+        };
+
+        recognition.onerror = (event) => {
+            alert('Voice recognition error: ' + event.error);
+        };
+
+        recognition.onend = () => {
+            voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+            voiceBtn.style.color = '';
+        };
+
+        recognition.start();
+    } else {
+        alert('Voice search is not supported in this browser. Please use Chrome or Edge.');
+    }
+});
+
+// Handle tab clicks
+tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        tabBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const tabName = btn.dataset.tab;
+        quizTab.style.display = tabName === 'quiz' ? 'block' : 'none';
+        statsTab.style.display = tabName === 'stats' ? 'block' : 'none';
+        historyTab.style.display = tabName === 'history' ? 'block' : 'none';
+
+        if (tabName === 'quiz') startQuiz();
+        if (tabName === 'stats') loadStats();
+        if (tabName === 'history') loadHistory();
+    });
+});
+
+// Handle next question button
+nextQuestionBtn.addEventListener('click', () => {
+    currentQuestionIndex++;
+    if (currentQuestionIndex < quizQuestions.length) {
+        loadQuestion();
+        nextQuestionBtn.style.display = 'none';
+    } else {
+        showQuizResult();
+    }
+});
+
+// Handle clear history button
+clearHistoryBtn.addEventListener('click', () => {
+    localStorage.removeItem('searchHistory');
+    loadHistory();
+});
+
 function performSearch() {
     const query = searchInput.value.trim().toLowerCase();
 
@@ -111,9 +206,11 @@ function performSearch() {
 
     // Find match in database
     let found = false;
+    let foundData = null;
     for (const item in wasteDatabase) {
         if (item.includes(query) || query.includes(item)) {
-            displayResult(wasteDatabase[item], query);
+            foundData = wasteDatabase[item];
+            displayResult(foundData, query);
             found = true;
             break;
         }
@@ -121,15 +218,22 @@ function performSearch() {
 
     if (!found) {
         // Show generic result if not found
-        displayResult({
+        foundData = {
             category: "unknown",
             description: "We couldn't identify this item in our database",
             examples: ["Please check local guidelines", "When in doubt, treat as dry waste", "Contact your waste management service"]
-        }, query);
+        };
+        displayResult(foundData, query);
     }
 
     // Scroll to results
     resultContainer.scrollIntoView({ behavior: 'smooth' });
+
+    // Update statistics and history
+    if (foundData && foundData.category !== "unknown") {
+        updateStats(foundData.category);
+        addToHistory(query);
+    }
 }
 
 function displayResult(data, query) {
